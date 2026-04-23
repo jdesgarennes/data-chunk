@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-chunk-job
+  namespace: default
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      nodeSelector:
+        kubernetes.io/hostname: rancher-h9-gpu1
+      containers:
+        - name: data-chunk
+          image: python:3.11-bookworm
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/bash", "-lc"]
+          args:
+            - |
+              set -e
+              apt-get update && apt-get install -y --no-install-recommends \
+                git \
+                libreoffice \
+                libgl1 \
+                libglib2.0-0 \
+                && rm -rf /var/lib/apt/lists/*
+
+              git clone https://github.com/jdesgarennes/data-chunk.git /app
+              cd /app
+
+              pip install --no-cache-dir --upgrade pip
+              pip install --no-cache-dir -r requirements-linux.txt
+
+              python spacy/convert.py
+              python embed/embed.py
+          env:
+            - name: QDRANT_URL
+              value: "http://10.1.60.67:6333"
+            - name: OLLAMA_URL
+              value: "http://rancher.pechanga.com:31434"
+            - name: COLLECTION_NAME
+              value: "hr_policiesNew"
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+            requests:
+              nvidia.com/gpu: 1

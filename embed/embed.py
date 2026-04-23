@@ -34,7 +34,7 @@ def embed(obj):
 
 points = []
 
-with open("output.jsonl") as f:
+with open("../spacy/output/output.jsonl") as f:
     data = [json.loads(line) for line in f]
 
 with ThreadPoolExecutor(max_workers=WORKERS) as executor:
