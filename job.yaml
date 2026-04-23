@@ -25,7 +25,7 @@ spec:
 
               git clone https://github.com/jdesgarennes/data-chunk.git /app
               cd /app
-
+              python -m spacy download en_core_web_sm
               pip install --no-cache-dir --upgrade pip
               pip install --no-cache-dir -r requirements-linux.txt
 
