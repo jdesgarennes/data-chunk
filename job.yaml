@@ -8,8 +8,6 @@ spec:
   template:
     spec:
       restartPolicy: Never
-      nodeSelector:
-        kubernetes.io/hostname: rancher-h9-gpu1
       containers:
         - name: data-chunk
           image: python:3.11-bookworm
@@ -40,8 +38,4 @@ spec:
               value: "http://rancher.pechanga.com:31434"
             - name: COLLECTION_NAME
               value: "hr_policiesNew"
-          resources:
-            limits:
-              nvidia.com/gpu: 1
-            requests:
-              nvidia.com/gpu: 1
+ 
